@@ -1,0 +1,15 @@
+eclipse.preferences.version=1
+encoding//qzone/login/login.py=utf8
+encoding//qzone/login/qZoneMain.py=utf8
+encoding//qzone/login/sqlConnect.py=utf8
+encoding//qzone/login/testMain.py=utf8
+encoding//qzone/spiderUtils/html_downloader.py=utf8
+encoding//qzone/spiderUtils/qqParser.py=utf8
+encoding//qzone/test/testBrowserClick.py=utf8
+encoding//qzone/test/testDownload.py=utf8
+encoding//qzone/test/testLogin.py=utf8
+encoding//qzone/test/testOpenFile.py=utf8
+encoding//qzone/test/testQZoneMain.py=utf8
+encoding//qzone/test/testSelenium.py=utf8
+encoding//qzone/test/testSpynner.py=utf8
+encoding//qzone/testSQL/test_iud.py=utf8
