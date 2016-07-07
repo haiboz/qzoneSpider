@@ -32,6 +32,7 @@ class SQLConnect(object):
         cursor.close() 
     
     def select (self,sql):
+        '''查询sql 返回cursor对象'''
         conn = self.conn
         cursor = conn.cursor()
         cursor.execute(sql)
