@@ -7,6 +7,7 @@ Created on 2016-6-24
 
 import MySQLdb
 print MySQLdb
+import codecs
 
 
 class SQLConnect(object):
@@ -35,8 +36,12 @@ class SQLConnect(object):
         '''查询sql 返回cursor对象'''
         conn = self.conn
         cursor = conn.cursor()
-        cursor.execute(sql)
-        return cursor
+        try:
+            cursor.execute(sql)
+        except :
+            open("log_error.log","a+").write("select error:sql = "+sql+"\n")
+            print "查询异常sql:"+sql
+        return cursor    
     
     def insert(self,sql):
         '''插入语句'''
@@ -46,9 +51,10 @@ class SQLConnect(object):
             cursor.execute(sql)
             conn.commit()
             self.dualSelect()
-            print "插入成功"
         except Exception as e:
-            print "插入失败:sql="+sql
+            error = sql.encode("utf-8")
+            open("log_error.log","a+").write("insert error:sql = "+error+"\n")
+            print "插入异常:sql="+sql
             print e
 #         cursor.close()
 #         conn.close()

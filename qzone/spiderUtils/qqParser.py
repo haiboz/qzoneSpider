@@ -39,14 +39,14 @@ class QQParser(object):
                 for moodTag in moodTags:
                     mood = mood + moodTag.get_text()+"//"
                 mood = mood[:-2]
-            print mood
+#             print mood
             #发表日期
             dateTag = li.find("a",attrs={'class':'c_tx c_tx3 goDetail'})
             if dateTag is None:
                 date = ""
             else:
                 date = dateTag.get_text()
-            print date
+#             print date
             #点赞人数
             supportTag = li.find("a",style="display: inline-block;",attrs={'class':'qz_like_btn c_tx mr8'})
             if supportTag is None:
@@ -57,7 +57,7 @@ class QQParser(object):
                     support = support[2:-1]
                 else:
                     support = "0"
-            print "赞："+support
+#             print "赞："+support
             #评论人数
             commentTag = li.find("a",attrs={'class':'c_tx comment_btn'})
             if commentTag is None:
@@ -68,7 +68,7 @@ class QQParser(object):
                     comment = comment[3:-1]
                 else:
                     comment = "0"
-            print "评论："+comment
+#             print "评论："+comment
             #转发人数
             fowardTag = li.find("a",attrs={'class':'c_tx forward_btn'})
             if fowardTag is None:
@@ -79,9 +79,10 @@ class QQParser(object):
                     foward = foward[3:-1]
                 else:
                     foward = "0"
-            print "转发："+foward
+#             print "转发："+foward
             index = index + 1
-            sql = "insert into mood(mood_id,date,mood_content,support_count,comment_count,forward_count) values('"+currentQQ+"','"+date+"','"+mood+"',"+support+","+comment+","+foward+");"
+            mood = mood.replace("'", "\\'")#替换说说中出现的单引号',以防止插入失败
+            sql = "insert into mood(mood_id,date,mood_content,support_count,comment_count,forward_count) values('%s','%s','%s','%s','%s','%s');" % (currentQQ,date,mood,support,comment,foward)
             self.connect.insert(sql)
         
         
@@ -96,6 +97,7 @@ class QQParser(object):
         tempNickNameList = []
         for link in links:
             nickName = link.text
+            nickName = nickName.replace("'","\\'")
             href = link["href"]
             #截取需要的qq号码
             if len(href) > 10:
@@ -125,6 +127,8 @@ class QQParser(object):
             sql = "select friend_qq from friend where friend_qq = %s" % qq
             cursor = self.connect.select(sql)
             if cursor.rowcount == 0:#若没有则插入
+                nickName = nickNameList[tempIndex]
+#                 nickName = nickName.replace("'","\\'")
                 sqlIns = "insert friend(qq_id,friend_qq,friend_nickname,status) values(%s,%s,%s,%d)" % (currentQQ,qq,"'"+nickNameList[tempIndex]+"'",0)
                 self.connect.insert(sqlIns)
             tempIndex = tempIndex + 1

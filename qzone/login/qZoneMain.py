@@ -21,19 +21,16 @@ class QQMain(object):
         conn = self.sqlConnect.connect()
         cursor = conn.cursor()
         sqlSel = "select id,friend_qq from friend where status = 0 LIMIT 1"
-        
         cursor.execute(sqlSel)
         rs = cursor.fetchone()
         if rs is not None:
-            print rs
-            #把该账号置为已爬去
+            #把该账号置为已读取
             try:
                 sqlUpd = "update friend SET status = 1 where id = %d" % rs[0]
-                sqlIns = "insert into dealtQq(qq) values(%d)" % rs[0]
-                cursor.execute(sqlIns)
+#                 sqlIns = "insert into dealtQq(qq) values(%d)" % rs[0]
+#                 cursor.execute(sqlIns)
                 cursor.execute(sqlUpd)
                 conn.commit()#事务提交
-                print "已重置"
             except Exception as e:
                 print e
                 conn.rollback() #事务回滚
@@ -56,15 +53,18 @@ class QQMain(object):
     
     def crawUserInfo(self,browser,currentQQ):
         '''爬取用户基本信息'''
-        pass
-    
-
-    def getQQFriend(self, browser, currentQQ):
-        '''获取说说页面出现的好友qq号码存储'''
-        self.qqParser.parseQQFriend(currentQQ)
+        
+        
         
         pass
     
+
+    
+    def insertDealtQQ(self, currentQQ):
+        '''把当前qq存入到已被爬取的qq号码表中'''
+        sql = "insert into dealtqq(qq) values(%s)" %  currentQQ
+        self.sqlConnect.insert(sql)
+        
     
     def craw(self,count,maxCount):
         rs = qqMain.nextuser()
@@ -90,60 +90,42 @@ class QQMain(object):
                     mainTag = browser.find_element_by_id("tb_index_ownerfeeds")
                 except:
                     mainTag = None
-            print "当前可访问qq:%d" % currentQQ
+            print "第 %d 个可访问qq:%d" % (count,currentQQ)
             #1.爬取用户说说及好友信息
             self.crawMood(browser,currentQQ)
             #1.2 获取说说页面出现的好友qq号码存储
             self.qqParser.parseQQFriend(currentQQ)
             #2.爬取用户基本信息
             self.crawUserInfo(browser, currentQQ)
+            #3.把该qq号码存入已被爬取的qq号码表中
+            self.insertDealtQQ(currentQQ)
             count = count + 1
         return count
 
 if __name__ == "__main__":
     print "进入主函数"
     qqMain = QQMain()
-    browser = qqMain.login.loginQQ()#登录qq
+    qqIndex = 1#使用第几个qq号码登录程序
+    browser = qqMain.login.loginQQ(qqIndex)#登录qq
     maxCount = 50#限制爬取的qq最大数
-    count = 0#当前已爬去的qq数
+    count = 1#当前已爬去的qq数
     while count < maxCount:
-        count = qqMain.craw(count,maxCount)
+        if count % 5 == 0:
+            qqIndex = qqIndex + 1
+            browser.close()
+            browser = qqMain.login.loginQQ(qqIndex)#登录qq
+        try:
+            count = qqMain.craw(count,maxCount)
+        except:
+            open("log_error.log","a+").write("craw error:count = %d" % count)
+            print "当前爬取出现异常：%d" % count
+    browser.quit()
     print "结束爬虫"
     
         
         
     
     
-    if 1 == 2:
-        time.sleep(1)
-        
-        browser.get("http://user.qzone.qq.com/1069757861/1")#个人档
-        time.sleep(1)
-        url = browser.current_url
-        print "url = "+url
-        browser.switch_to_frame("app_canvas_frame")#定位到iframe  且只能定位一次  再次定位将失效
-        
-        source = browser.page_source  #获取加载好的网页信息 提取有效信息
-        open("page.html","w+").write(source)
-    elif 1==3:
-        browser.get("http://user.qzone.qq.com/1069757861/311")#说说列表
-        time.sleep(1)
-        url = browser.current_url
-        print "url = "+url
-        browser.switch_to_frame("app_canvas_frame")#定位到iframe  且只能定位一次  再次定位将失效
-        
-        source = browser.page_source  #获取加载好的网页信息 提取有效信息
-        open("page_shuoshuo.html","w+").write(source)
-        #<ol id="msgList"   说说内容
-    else:
-        pass
-    
-    
-    
-    
-
-
-
 
 
 
