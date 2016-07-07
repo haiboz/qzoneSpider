@@ -8,37 +8,36 @@ Created on 2016-6-24
 import sqlConnect
 from qzone.spiderUtils import qqParser
 # 
-parser = qqParser.QQParser()
-qq = "1069757861"
-parser.parseMood(qq)
-connect = sqlConnect.SQLConnect()
-# conn = connect.connect()
-# cursor = conn.cursor()
-content = "content"
-date = "2016-01-02"
-scount = "2"
-pcount = "3"
-zcount = "5"
-sql = "insert into mood(mood_id,date,mood_content,support_count,comment_count,forward_count) values('"+qq+"','"+date+"','"+content+"',"+scount+","+pcount+","+zcount+")" 
-# connect.insert(sql)
-
-
-# try:
-#     cursor.execute(sql)
-#     conn.commit()
-#     print "insert 成功"
-# except Exception as e:
-#     print e
-#     conn.rollback()
-# cursor.close()
-#conn.close()
-
-
-# 
-# s1="赞(ss"
-# s2="("
-# if s2 in s1:
-#     print "ssss"
-# else:
-#     print "tttt"
-
+class TestMain(object):
+    def __init__(self):
+        self.parser = qqParser.QQParser()
+        self.qq = "1069757861"
+    
+    
+    
+    def testIns(self):
+        qq = self.qq
+        self.parser.parseMood(qq)
+        connect = sqlConnect.SQLConnect()
+        # conn = connect.connect()
+        # cursor = conn.cursor()
+        content = "content"
+        date = "2016-01-02"
+        scount = "2"
+        pcount = "3"
+        zcount = "5"
+        sql = "insert into mood(mood_id,date,mood_content,support_count,comment_count,forward_count) values('"+qq+"','"+date+"','"+content+"',"+scount+","+pcount+","+zcount+")" 
+        # connect.insert(sql)
+        
+        
+    def testParseQQFrind(self):
+        print "testParseQQFrind"
+        self.parser.parseQQFriend(self.qq)
+        
+        
+        
+    
+if __name__ == "__main__":
+        testMain = TestMain()
+#         testMain.testIns()
+        testMain.testParseQQFrind()
