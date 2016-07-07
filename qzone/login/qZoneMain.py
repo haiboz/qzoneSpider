@@ -29,6 +29,8 @@ class QQMain(object):
             #把该账号置为已爬去
             try:
                 sqlUpd = "update friend SET status = 1 where id = %d" % rs[0]
+                sqlIns = "insert into dealtQq(qq) values(%d)" % rs[0]
+                cursor.execute(sqlIns)
                 cursor.execute(sqlUpd)
                 conn.commit()#事务提交
                 print "已重置"
@@ -56,11 +58,19 @@ class QQMain(object):
         '''爬取用户基本信息'''
         pass
     
-    def craw(self,count):
+
+    def getQQFriend(self, browser, currentQQ):
+        '''获取说说页面出现的好友qq号码存储'''
+        self.qqParser.parseQQFriend(currentQQ)
+        
+        pass
+    
+    
+    def craw(self,count,maxCount):
         rs = qqMain.nextuser()
         if rs is None:
-            print "爬虫结束"
-            return count
+            print "qq账号已全部爬取"
+            return maxCount
         else:
             #爬虫继续
             currentNum = rs[0]
@@ -71,10 +81,10 @@ class QQMain(object):
                 mainTag = browser.find_element_by_id("tb_index_ownerfeeds")
             except:
                 mainTag = None
-            while mainTag is None:#空间为开通或没有访问权限
+            while mainTag is None:#空间未开通或没有访问权限
                 rs = qqMain.nextuser()
-                currentNum = rs[0]
-                currentQQ = rs[1]
+                currentNum = rs[0]#id
+                currentQQ = rs[1]#qq
                 browser.get("http://user.qzone.qq.com/%d/main" % currentQQ) #进入主页
                 try:
                     mainTag = browser.find_element_by_id("tb_index_ownerfeeds")
@@ -83,6 +93,8 @@ class QQMain(object):
             print "当前可访问qq:%d" % currentQQ
             #1.爬取用户说说及好友信息
             self.crawMood(browser,currentQQ)
+            #1.2 获取说说页面出现的好友qq号码存储
+            self.qqParser.parseQQFriend(currentQQ)
             #2.爬取用户基本信息
             self.crawUserInfo(browser, currentQQ)
             count = count + 1
@@ -92,9 +104,11 @@ if __name__ == "__main__":
     print "进入主函数"
     qqMain = QQMain()
     browser = qqMain.login.loginQQ()#登录qq
-    count = 0
-    while count < 100:
-        count = qqMain.craw(count)
+    maxCount = 50#限制爬取的qq最大数
+    count = 0#当前已爬去的qq数
+    while count < maxCount:
+        count = qqMain.craw(count,maxCount)
+    print "结束爬虫"
     
         
         

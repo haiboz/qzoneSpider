@@ -6,6 +6,7 @@ Created on 2016-6-24
 '''
 from bs4 import BeautifulSoup
 from qzone.login import sqlConnect
+import re
 
 class QQParser(object):
     '''解析器'''
@@ -84,10 +85,54 @@ class QQParser(object):
             self.connect.insert(sql)
         
         
-            
+    
+    def parseQQFriend(self,currentQQ):
+        '''获取说说页面出现的好友qq号码存储'''
+        cont = open("page_shuoshuo.html","r+").read()
+        soup = BeautifulSoup(cont,"html.parser",from_encoding="utf-8")
+        #<a class="nickname" href="http://user.qzone.qq.com/798102408/mood/" target="_self">浮生若梦</a>
+        links = soup.find_all("a",attrs = {'class':'nickname','target':'_self'})
+        tempQQList = []
+        tempNickNameList = []
+        for link in links:
+            nickName = link.text
+            href = link["href"]
+            #截取需要的qq号码
+            if len(href) > 10:
+                s1 = "com/"
+                s2 = "/mood"
+                num1 = href.index(s1)
+                num2 = href.index(s2)
+                qq = href[num1+4:num2]
+                tempQQList.append(qq)
+                tempNickNameList.append(nickName)
+#         tempQQList = list(set(tempQQList))
+        qqList = []
+        nickNameList = []
+        #qq号、昵称去重
+        tempQQIndex = 0
+        for qq in tempQQList:
+            if qq not in qqList:
+                qqList.append(qq)
+                nickNameList.append(tempNickNameList[tempQQIndex])
+            tempQQIndex = tempQQIndex + 1
+#         for nickName in tempNickNameList:
+#             if nickName not in nickNameList:
+#                 nickNameList.append(nickName)
+        tempIndex = 0
+        for qq in qqList:
+            #如果friend表中未出现过该qq号 则进行存储
+            sql = "select friend_qq from friend where friend_qq = %s" % qq
+            cursor = self.connect.select(sql)
+            if cursor.rowcount == 0:#若没有则插入
+                sqlIns = "insert friend(qq_id,friend_qq,friend_nickname,status) values(%s,%s,%s,%d)" % (currentQQ,qq,"'"+nickNameList[tempIndex]+"'",0)
+                self.connect.insert(sqlIns)
+            tempIndex = tempIndex + 1
+#         print qqList         
     
     def parseUserInfo(self):
         '''解析用户信息并保存数据库'''
         pass
+    
     
     

@@ -31,6 +31,12 @@ class SQLConnect(object):
         cursor.execute(sql)
         cursor.close() 
     
+    def select (self,sql):
+        conn = self.conn
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        return cursor
+    
     def insert(self,sql):
         '''插入语句'''
         conn = self.conn
