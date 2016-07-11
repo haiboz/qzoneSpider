@@ -52,10 +52,14 @@ class QQMain(object):
     
     def crawUserInfo(self,browser,currentQQ):
         '''爬取用户基本信息'''
-        browser.get("http://user.qzone.qq.com/%d/profile" % currentQQ)#说说
+        browser.get("http://user.qzone.qq.com/%d" % currentQQ)#说说
         url = browser.current_url
         print "个人信息url = "+url
-        browser.switch_to_frame("app_canvas_frame")#定位到iframe  且只能定位一次  再次定位将失效
+        browser.find_element_by_xpath("//div[@id='menuContainer']/div/ul/li[6]/a").click()
+        
+#         browser.switch_to_frame("app_canvas_frame")#定位到iframe  且只能定位一次  再次定位将失效
+#         tt = browser.find_element_by_xpath("//div[@id='info_preview']/div[2]/ul/li[1]/div").text
+
         source = browser.page_source  #获取加载好的网页信息 提取有效信息
         open("page_userinfo.html","w+").write(source)
         #解析用户个人信息

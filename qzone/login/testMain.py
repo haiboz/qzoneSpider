@@ -67,7 +67,7 @@ class TestMain(object):
 
     
     def testQQLogin(self):
-        browser = self.login.loginQQ(1)
+        browser = self.login.loginQQ(2)
         return browser
     
     
@@ -76,16 +76,21 @@ class TestMain(object):
     
 if __name__ == "__main__":
         testMain = TestMain()
+        currentQQ = 1145426412
 #         
 #         testMain.testIns()
 #         testMain.testParseQQFrind()
 #         testMain.testInsertQQ("798102408")
 #         testMain.testInsertSpicelSignl()
 #         testMain.testGetLoginQQ() 
-        browser = testMain.testQQLogin()
-        currentQQ = 1145426412
-        testMain.qZoneMain.crawUserInfo(browser, currentQQ)
-        browser.quit()
+
+#         browser = testMain.testQQLogin()
+# #         currentQQ = 1145426412
+#         currentQQ = 2425705688
+#         testMain.qZoneMain.crawUserInfo(browser, currentQQ)
+#         browser.quit()
+        
+        testMain.parser.parseUserInfo(currentQQ)
         
         
         

@@ -7,6 +7,7 @@ Created on 2016-6-24
 from bs4 import BeautifulSoup
 from qzone.login import sqlConnect
 import re
+import json
 
 class QQParser(object):
     '''解析器'''
@@ -133,7 +134,78 @@ class QQParser(object):
     
     def parseUserInfo(self,currentQQ):
         '''解析用户信息并保存数据库'''
-        pass
+        userfile = open("page_userinfo.html","r+")
+        lines = userfile.readlines()
+        userfile.close()
+        index = 600
+        lineList = lines[index:]
+        startIndex = 0
+        userStr = ""
+        for line in lineList:
+            if line.find('g_userProfile') == 0:
+                startIndex = index
+                break
+            index = index + 1
+        if startIndex != 0:
+            #已获取到个人信息字符串
+            userList = lines[startIndex:startIndex+41]
+            for s in userList:
+                userStr = userStr + s
+#             print userStr
+            subStart = "{"
+            subEnd = "}"
+            indexSrart = userStr.find(subStart)
+            indexEnd = userStr.find(subEnd)
+            userStr = userStr[indexSrart+1:indexEnd]#截取获得最终需要的json数据
+            userStr = userStr.replace('"', '')
+            userStr = userStr.replace('\n', '')
+            userStr = userStr.replace(' ', '')
+            ujson = userStr.split(",")
+            for element in ujson:
+                if element.find("nickname:") == 0:#昵称
+                    print "昵称:"+element
+                if element.find("spacename:") == 0:#空间名称
+                    print "空间名称:"+element
+                if element.find("sex:") == 0:#性别
+                    print "性别:"+element
+                if element.find("age:") == 0:#年龄
+                    print "年龄:"+element
+                if element.find("birthyear:") == 0:#出生年份
+                    print "出生年份:"+element
+                if element.find("birthday:") == 0:#出生日期
+                    print "出生日期:"+element
+                if element.find("bloodtype:") == 0:#血型
+                    print "血型:"+element
+                if element.find("constellation:") == 0:#星座
+                    print "星座:"+element
+                if element.find("country:") == 0:#现居地  国家
+                    print "现居地  国家:"+element
+                if element.find("province:") == 0:#现居地  省份
+                    print "现居地  省份:"+element
+                if element.find("city:") == 0:#现居地  城市
+                    print "现居地  城市:"+element
+                if element.find("hco:") == 0:#故乡  国家
+                    print "故乡  国家:"+element
+                if element.find("hp:") == 0:#故乡  省份
+                    print "故乡  省份:"+element
+                if element.find("hc:") == 0:#故乡  城市
+                    print "故乡  城市:"+element  
+                if element.find("marriage:") == 0:#婚姻状况
+                    print "婚姻状况:"+element
+                if element.find("career:") == 0:#职业
+                    print "职业:"+element
+                if element.find("company:") == 0:#公司名称
+                    print "公司名称:"+element
+                if element.find("cco:") == 0:#公司 所在国家
+                    print "公司 所在国家:"+element  
+                if element.find("cp:") == 0:#公司 所在省份
+                    print "公司 所在省份:"+element  
+                if element.find("co:") == 0:#公司 所在城市
+                    print "公司 所在城市:"+element  
+                if element.find("cb:") == 0:#公司 详细地址
+                    print "公司 详细地址:"+element  
+            print ujson
+            
     
     
     
