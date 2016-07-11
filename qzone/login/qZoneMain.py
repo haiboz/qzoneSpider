@@ -27,13 +27,11 @@ class QQMain(object):
             #把该账号置为已读取
             try:
                 sqlUpd = "update friend SET status = 1 where id = %d" % rs[0]
-#                 sqlIns = "insert into dealtQq(qq) values(%d)" % rs[0]
-#                 cursor.execute(sqlIns)
                 cursor.execute(sqlUpd)
                 conn.commit()#事务提交
             except Exception as e:
                 print e
-                conn.rollback() #事务回滚
+                conn.rollback() #事务回滚 
             return rs
         else:
             #爬虫结束
@@ -43,22 +41,27 @@ class QQMain(object):
         '''爬取说说信息'''
         browser.get("http://user.qzone.qq.com/%d/311" % currentQQ)#说说
         url = browser.current_url
-        print "url = "+url
+        print "说说url = "+url
         time.sleep(0.5)
         browser.switch_to_frame("app_canvas_frame")#定位到iframe  且只能定位一次  再次定位将失效
         source = browser.page_source  #获取加载好的网页信息 提取有效信息
         open("page_shuoshuo.html","w+").write(source)
+        #解析说说及相关信息
         self.qqParser.parseMood(currentQQ)
         pass
     
     def crawUserInfo(self,browser,currentQQ):
         '''爬取用户基本信息'''
-        
-        
-        
+        browser.get("http://user.qzone.qq.com/%d/profile" % currentQQ)#说说
+        url = browser.current_url
+        print "个人信息url = "+url
+        browser.switch_to_frame("app_canvas_frame")#定位到iframe  且只能定位一次  再次定位将失效
+        source = browser.page_source  #获取加载好的网页信息 提取有效信息
+        open("page_userinfo.html","w+").write(source)
+        #解析用户个人信息
+        self.qqParser.parseUserInfo(currentQQ)
         pass
-    
-
+        
     
     def insertDealtQQ(self, currentQQ):
         '''把当前qq存入到已被爬取的qq号码表中'''
@@ -90,7 +93,7 @@ class QQMain(object):
                     mainTag = browser.find_element_by_id("tb_index_ownerfeeds")
                 except:
                     mainTag = None
-            print "第 %d 个可访问qq:%d" % (count,currentQQ)
+            print "第   %d 个可访问qq : %d" % (count,currentQQ)
             #1.爬取用户说说及好友信息
             self.crawMood(browser,currentQQ)
             #1.2 获取说说页面出现的好友qq号码存储
@@ -107,7 +110,7 @@ if __name__ == "__main__":
     qqMain = QQMain()
     qqIndex = 1#使用第几个qq号码登录程序
     browser = qqMain.login.loginQQ(qqIndex)#登录qq
-    maxCount = 50#限制爬取的qq最大数
+    maxCount = 30#限制爬取的qq最大数
     count = 1#当前已爬去的qq数
     while count < maxCount:
         if count % 5 == 0:

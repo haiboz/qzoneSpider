@@ -118,9 +118,6 @@ class QQParser(object):
                 qqList.append(qq)
                 nickNameList.append(tempNickNameList[tempQQIndex])
             tempQQIndex = tempQQIndex + 1
-#         for nickName in tempNickNameList:
-#             if nickName not in nickNameList:
-#                 nickNameList.append(nickName)
         tempIndex = 0
         for qq in qqList:
             #如果friend表中未出现过该qq号 则进行存储
@@ -134,7 +131,7 @@ class QQParser(object):
             tempIndex = tempIndex + 1
 #         print qqList         
     
-    def parseUserInfo(self):
+    def parseUserInfo(self,currentQQ):
         '''解析用户信息并保存数据库'''
         pass
     

@@ -52,7 +52,7 @@ class QZoneLogin(object):
         time.sleep(1)
         #自动点击登陆按钮
         self.browser.find_element_by_id("login_button").click()
-        print "登录成功！ qq号为："+user
+        print "6666666666666~~登录成功！ qq号为："+user
         time.sleep(1)
         return self.browser
     
