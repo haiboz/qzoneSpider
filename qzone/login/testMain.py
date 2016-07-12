@@ -9,6 +9,8 @@ import sqlConnect
 from qzone.spiderUtils import qqParser
 from qzone.login import login
 import qZoneMain
+import time
+
 # 
 class TestMain(object):
     def __init__(self):
@@ -90,8 +92,10 @@ if __name__ == "__main__":
 #         testMain.qZoneMain.crawUserInfo(browser, currentQQ)
 #         browser.quit()
         
-        testMain.parser.parseUserInfo(currentQQ)
-        
+#         testMain.parser.parseUserInfo(currentQQ)
+        ISOTIMEFORMAT="%Y-%m-%d %X"
+        tt = time.strftime( ISOTIMEFORMAT, time.localtime() )
+        print "shijian:"+tt
         
         
         

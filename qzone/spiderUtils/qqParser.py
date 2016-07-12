@@ -128,6 +128,7 @@ class QQParser(object):
                 nickName = nickNameList[tempIndex]
 #                 nickName = nickName.replace("'","\\'")
                 sqlIns = "insert friend(qq_id,friend_qq,friend_nickname,status) values(%s,%s,%s,%d)" % (currentQQ,qq,"'"+nickNameList[tempIndex]+"'",0)
+#                 print "sqlIns="+sqlIns
                 self.connect.insert(sqlIns)
             tempIndex = tempIndex + 1
 #         print qqList         
@@ -151,7 +152,6 @@ class QQParser(object):
             userList = lines[startIndex:startIndex+41]
             for s in userList:
                 userStr = userStr + s
-#             print userStr
             subStart = "{"
             subEnd = "}"
             indexSrart = userStr.find(subStart)
@@ -161,50 +161,167 @@ class QQParser(object):
             userStr = userStr.replace('\n', '')
             userStr = userStr.replace(' ', '')
             ujson = userStr.split(",")
+            qqid = ""
+            nickname = ""
+            spacename = ""
+            sex = ""
+            age = ""
+            birthyear = ""
+            birthday = ""
+            bloodtype = ""
+            constellation = ""
+            country = ""
+            province = ""
+            city = ""
+            hcc = ""
+            hp = ""
+            hc = ""
+            marriage = ""
+            career = ""
+            company = ""
+            cco = ""
+            cp = ""
+            cc = ""
+            cb = ""
             for element in ujson:
+                if element.find("uin:") == 0:#昵称
+                    qqid = element[5:]
+                    qqid = qqid.replace("'","\\'")
+#                     print "qq号:"+qqid
                 if element.find("nickname:") == 0:#昵称
-                    print "昵称:"+element
+                    nickname = element[9:]
+                    nickname = nickname.replace("'","\\'")
+#                     print "昵称:"+nickname
                 if element.find("spacename:") == 0:#空间名称
-                    print "空间名称:"+element
+                    spacename = element[10:]
+                    spacename = spacename.replace("'", "\\'")
+#                     print "空间名称:"+spacename
                 if element.find("sex:") == 0:#性别
-                    print "性别:"+element
+                    if element == "sex:+1": 
+                        sex = "男"
+                    else:
+                        sex = "女"
+#                     print "性别:"+sex
                 if element.find("age:") == 0:#年龄
-                    print "年龄:"+element
+                    age = element[5:]
+#                     print "年龄:"+age
                 if element.find("birthyear:") == 0:#出生年份
-                    print "出生年份:"+element
+                    birthyear = element[11:]
+#                     print "出生年份:"+birthyear
                 if element.find("birthday:") == 0:#出生日期
-                    print "出生日期:"+element
+                    birthday = element[10:]
+                    if len(birthday) == 4:
+                        birthday = "0"+birthday
+#                     print "出生日期:"+birthday
                 if element.find("bloodtype:") == 0:#血型
-                    print "血型:"+element
+                    if element == "bloodtype:+1":
+                        bloodtype = "A"
+                    elif element == "bloodtype:+2":
+                        bloodtype = "B"
+                    elif element == "bloodtype:+3":
+                        bloodtype = "O"
+                    elif element == "bloodtype:+4":
+                        bloodtype = "AB"
+                    else:
+                        bloodtype = "其他"
+#                     print "血型:"+bloodtype
                 if element.find("constellation:") == 0:#星座
-                    print "星座:"+element
+                    constellation = element[15:]
+                    if constellation == "0":
+                        constellation = "白羊座"
+                    elif constellation == "1":
+                        constellation = "金牛座"
+                    elif constellation == "2":
+                        constellation = "双子座"
+                    elif constellation == "3":
+                        constellation = "巨蟹座"
+                    elif constellation == "4":
+                        constellation = "狮子座"
+                    elif constellation == "5":
+                        constellation = "处女座"
+                    elif constellation == "6":
+                        constellation = "天秤座"
+                    elif constellation == "7":
+                        constellation = "天蝎座"
+                    elif constellation == "8":
+                        constellation = "射手座"
+                    elif constellation == "9":
+                        constellation = "摩羯座"
+                    elif constellation == "10":
+                        constellation = "水瓶座"
+                    elif constellation == "11":
+                        constellation = "双鱼座"
+                    else:
+                        constellation = "未填写"
+#                     print "星座:"+constellation
                 if element.find("country:") == 0:#现居地  国家
-                    print "现居地  国家:"+element
+                    country = element[8:]
+#                     print "现居地  国家:"+country
                 if element.find("province:") == 0:#现居地  省份
-                    print "现居地  省份:"+element
+                    province = element[9:]
+#                     print "现居地  省份:"+province
                 if element.find("city:") == 0:#现居地  城市
-                    print "现居地  城市:"+element
+                    city = element[5:]
+#                     print "现居地  城市:"+city
                 if element.find("hco:") == 0:#故乡  国家
-                    print "故乡  国家:"+element
+                    hcc = element[4:]
+#                     print "故乡  国家:"+hcc
                 if element.find("hp:") == 0:#故乡  省份
-                    print "故乡  省份:"+element
+                    hp = element[3:]
+#                     print "故乡  省份:"+hp
                 if element.find("hc:") == 0:#故乡  城市
-                    print "故乡  城市:"+element  
+                    hc = element[3:]
+#                     print "故乡  城市:"+hc  
                 if element.find("marriage:") == 0:#婚姻状况
-                    print "婚姻状况:"+element
+                    if element == "marriage:+1":
+                        marriage = "单身"
+                    elif element == "marriage:+2":
+                        marriage = "已婚"
+                    elif element == "marriage:+3":
+                        marriage = "保密"
+                    elif element == "marriage:+4":
+                        marriage = "恋爱中"
+                    elif element == "marriage:+5":
+                        marriage = "已订婚"
+                    elif element == "marriage:+6":
+                        marriage = "分居"
+                    elif element == "marriage:+7":
+                        marriage = "离异"
+                    else:
+                        marriage = "未填写"
+#                     print "婚姻状况:"+marriage
                 if element.find("career:") == 0:#职业
-                    print "职业:"+element
+                    career = element[7:]
+                    career = career.replace("'", "\\'")
+#                     print "职业:"+career
                 if element.find("company:") == 0:#公司名称
-                    print "公司名称:"+element
+                    company = element[8:]
+                    company = company.replace("'", "\\'")
+#                     print "公司名称:"+company
                 if element.find("cco:") == 0:#公司 所在国家
-                    print "公司 所在国家:"+element  
+                    cco = element[4:]
+#                     print "公司 所在国家:"+cco  
                 if element.find("cp:") == 0:#公司 所在省份
-                    print "公司 所在省份:"+element  
-                if element.find("co:") == 0:#公司 所在城市
-                    print "公司 所在城市:"+element  
+                    cp = element[3:]
+#                     print "公司 所在省份:"+cp  
+                if element.find("cc:") == 0:#公司 所在城市
+                    cc = element[3:]
+#                     print "公司 所在城市:"+cc
                 if element.find("cb:") == 0:#公司 详细地址
-                    print "公司 详细地址:"+element  
-            print ujson
+                    cb = element[3:]
+                    cb = cb.replace("'", "\\'")
+#                     print "公司 详细地址:"+cb  
+            birthday = birthyear+"-"+birthday
+            sql = "insert into userinfo(qq_id,nike_name,space_name,age,birthday,sex,Constellation,country,province,city,hcc,hp,hc,marriage,blood_type,career,company,cco,cp,cc,cb) \
+                    values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')\
+                    " % (qqid,nickname,spacename,age,birthday,sex,constellation,country,province,city,hcc,hp,hc,marriage,bloodtype,career,company,cco,cp,cc,cb)
+#             print "sql="+sql
+            self.connect.insert(sql)
+        else:
+            #没有获取到个人信息
+            print "没有检索到   %d 的个人信息！" % currentQQ
+            pass
+             
             
     
     

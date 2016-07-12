@@ -8,12 +8,14 @@ import login
 import time
 import sqlConnect
 from qzone.spiderUtils import qqParser
+from qzone.spiderUtils import commonUtils
 
 class QQMain(object):
     def __init__(self):
         self.login = login.QZoneLogin()
         self.sqlConnect = sqlConnect.SQLConnect()
         self.qqParser = qqParser.QQParser()
+        self.commomUtils = commonUtils.CommonUtils()
         
         
     def nextuser(self):
@@ -39,31 +41,56 @@ class QQMain(object):
     
     def crawMood(self,browser,currentQQ):
         '''爬取说说信息'''
+#         browser.implicitly_wait(5)
         browser.get("http://user.qzone.qq.com/%d/311" % currentQQ)#说说
         url = browser.current_url
-        print "说说url = "+url
-        time.sleep(0.5)
-        browser.switch_to_frame("app_canvas_frame")#定位到iframe  且只能定位一次  再次定位将失效
-        source = browser.page_source  #获取加载好的网页信息 提取有效信息
-        open("page_shuoshuo.html","w+").write(source)
-        #解析说说及相关信息
-        self.qqParser.parseMood(currentQQ)
+#         print "说说url = "+url
+        time.sleep(1)
+        try:
+            index = 0
+            while index < 10:
+                try:
+                    browser.switch_to_frame("app_canvas_frame")#定位到iframe  且只能定位一次  再次定位将失效
+                    break
+                except:
+                    time.sleep(0.5)
+                    print "%d 说说未访问到：%d" % (currentQQ,index)
+                index = index + 1
+            source = browser.page_source  #获取加载好的网页信息 提取有效信息
+            open("page_shuoshuo.html","w+").write(source)
+            #解析说说及相关信息
+            self.qqParser.parseMood(currentQQ)
+        except Exception as e:
+            localTime = qqMain.commomUtils.getLocalTime()
+            open("log_error.log","a+").write(localTime+" QQ:%d "+"用户说说信息爬取失败:count = %d %s\n" % (currentQQ,count,e))
+            print "爬取说说异常！！！"
         pass
     
     def crawUserInfo(self,browser,currentQQ):
         '''爬取用户基本信息'''
-        browser.get("http://user.qzone.qq.com/%d" % currentQQ)#说说
+        browser.get("http://user.qzone.qq.com/%d" % currentQQ)#个人信息
         url = browser.current_url
-        print "个人信息url = "+url
-        browser.find_element_by_xpath("//div[@id='menuContainer']/div/ul/li[6]/a").click()
-        
-#         browser.switch_to_frame("app_canvas_frame")#定位到iframe  且只能定位一次  再次定位将失效
-#         tt = browser.find_element_by_xpath("//div[@id='info_preview']/div[2]/ul/li[1]/div").text
-
-        source = browser.page_source  #获取加载好的网页信息 提取有效信息
-        open("page_userinfo.html","w+").write(source)
-        #解析用户个人信息
-        self.qqParser.parseUserInfo(currentQQ)
+#         print "个人信息url = "+url
+        time.sleep(1)
+        try:
+            index = 0
+            while index < 2:
+                try:
+                    #点击个人档链接
+                    browser.find_element_by_xpath("//div[@id='menuContainer']/div/ul/li[6]/a").click()
+                    break
+                except Exception as e :
+                    print "%d 个人信息未访问到：%d %s" % (currentQQ,index,e)
+                    time.sleep(0.5)
+                index = index + 1
+#             browser.find_element_by_xpath("//div[@id='menuContainer']/div/ul/li[6]/a").click()
+            source = browser.page_source  #获取加载好的网页信息 提取有效信息
+            open("page_userinfo.html","w+").write(source)
+            #解析用户个人信息
+            self.qqParser.parseUserInfo(currentQQ)
+        except Exception as e:
+            localTime = qqMain.commomUtils.getLocalTime()
+            open("log_error.log","a+").write(localTime+" QQ:%d "+"用户个人信息爬取失败:count = %d\n %s" % (currentQQ,count,e))
         pass
         
     
@@ -82,8 +109,9 @@ class QQMain(object):
             #爬虫继续
             currentNum = rs[0]
             currentQQ = rs[1]
-            browser.get("http://user.qzone.qq.com/%d/main" % currentQQ) #进入主页
+            browser.get("http://user.qzone.qq.com/%d" % currentQQ) #进入主页
             #判断能否进入空间
+            time.sleep(0.5)
             try:
                 mainTag = browser.find_element_by_id("tb_index_ownerfeeds")
             except:
@@ -100,14 +128,33 @@ class QQMain(object):
             print "第   %d 个可访问qq : %d" % (count,currentQQ)
             #1.爬取用户说说及好友信息
             self.crawMood(browser,currentQQ)
+#             print "爬取用户说说及好友信息"
             #1.2 获取说说页面出现的好友qq号码存储
-            self.qqParser.parseQQFriend(currentQQ)
+            try:
+                self.qqParser.parseQQFriend(currentQQ)
+            except Exception as e:
+                localTime = qqMain.commomUtils.getLocalTime()
+                open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
+                print e
+#             print "获取说说页面出现的好友qq号码存储"
             #2.爬取用户基本信息
-            self.crawUserInfo(browser, currentQQ)
+            try:
+                self.crawUserInfo(browser, currentQQ)
+            except Exception as e:
+                localTime = qqMain.commomUtils.getLocalTime()
+                open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
+#             print "爬取用户基本信息"
             #3.把该qq号码存入已被爬取的qq号码表中
-            self.insertDealtQQ(currentQQ)
+            try:
+                self.insertDealtQQ(currentQQ)
+            except Exception as e:
+                localTime = qqMain.commomUtils.getLocalTime()
+                open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
+#             print "把该qq号码存入已被爬取的qq号码表中"
             count = count + 1
         return count
+
+    
 
 if __name__ == "__main__":
     print "进入主函数"
@@ -122,11 +169,13 @@ if __name__ == "__main__":
             browser.close()
             browser = qqMain.login.loginQQ(qqIndex)#登录qq
         try:
+            #爬虫主程序
             count = qqMain.craw(count,maxCount)
         except:
-            open("log_error.log","a+").write("craw error:count = %d" % count)
+            localTime = qqMain.commomUtils.getLocalTime()
+            open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
             print "当前爬取出现异常：%d" % count
-    browser.quit()
+#     browser.quit()
     print "结束爬虫"
     
         

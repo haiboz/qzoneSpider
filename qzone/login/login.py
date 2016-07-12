@@ -49,11 +49,18 @@ class QZoneLogin(object):
         self.browser.find_element_by_id("u").send_keys(user)
         #密码框输入已知密码
         self.browser.find_element_by_id("p").send_keys(pwd)
-        time.sleep(1)
         #自动点击登陆按钮
-        self.browser.find_element_by_id("login_button").click()
-        print "6666666666666~~登录成功！ qq号为："+user
+        viewFlag = True
+        while viewFlag:
+            try:
+                self.browser.find_element_by_id("login_button").click()
+                viewFlag = False
+                break
+            except:
+                viewFlag = True
+                time.sleep(0.5)
         time.sleep(1)
+        print "登录成功！ 登陆QQ："+user
         return self.browser
     
 
