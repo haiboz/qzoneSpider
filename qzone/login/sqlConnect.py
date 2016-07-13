@@ -7,8 +7,7 @@ Created on 2016-6-24
 
 import MySQLdb
 print MySQLdb
-import codecs
-
+from qzone.spiderUtils import commonUtils
 
 class SQLConnect(object):
     def __init__(self):
@@ -39,7 +38,8 @@ class SQLConnect(object):
         try:
             cursor.execute(sql)
         except :
-            open("log_error.log","a+").write("select error:sql = "+sql+"\n")
+            localTime = commonUtils.CommonUtils().getLocalTime()
+            open("log_error.log","a+").write(localTime+" select error:sql = "+sql+"\n")
             print "查询异常sql:"+sql
         return cursor    
     
@@ -53,11 +53,10 @@ class SQLConnect(object):
             self.dualSelect()
         except Exception as e:
             error = sql.encode("utf-8")
-            open("log_error.log","a+").write("insert error:sql = "+error+"\n")
+            localTime = commonUtils.CommonUtils().getLocalTime()
+            open("log_error.log","a+").write(localTime+" insert error:sql = "+error+"\n")
             print "插入异常:sql="+sql
             print e
-#         cursor.close()
-#         conn.close()
             
         
         

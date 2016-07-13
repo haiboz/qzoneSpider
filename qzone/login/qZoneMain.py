@@ -41,9 +41,8 @@ class QQMain(object):
     
     def crawMood(self,browser,currentQQ):
         '''爬取说说信息'''
-#         browser.implicitly_wait(5)
         browser.get("http://user.qzone.qq.com/%d/311" % currentQQ)#说说
-        url = browser.current_url
+#         url = browser.current_url
 #         print "说说url = "+url
         time.sleep(1)
         try:
@@ -69,7 +68,7 @@ class QQMain(object):
     def crawUserInfo(self,browser,currentQQ):
         '''爬取用户基本信息'''
         browser.get("http://user.qzone.qq.com/%d" % currentQQ)#个人信息
-        url = browser.current_url
+#         url = browser.current_url
 #         print "个人信息url = "+url
         time.sleep(1)
         try:
@@ -83,7 +82,6 @@ class QQMain(object):
 #                     print "%d 个人信息未访问到：%d " % (currentQQ,index)
                     time.sleep(0.5)
                 index = index + 1
-#             browser.find_element_by_xpath("//div[@id='menuContainer']/div/ul/li[6]/a").click()
             source = browser.page_source  #获取加载好的网页信息 提取有效信息
             open("page_userinfo.html","w+").write(source)
             #解析用户个人信息
@@ -128,7 +126,6 @@ class QQMain(object):
             print "第   %d 个可访问qq : %d" % (count,currentQQ)
             #1.爬取用户说说及好友信息
             self.crawMood(browser,currentQQ)
-#             print "爬取用户说说及好友信息"
             #1.2 获取说说页面出现的好友qq号码存储
             try:
                 self.qqParser.parseQQFriend(currentQQ)
@@ -136,21 +133,18 @@ class QQMain(object):
                 localTime = qqMain.commomUtils.getLocalTime()
                 open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
                 print e
-#             print "获取说说页面出现的好友qq号码存储"
             #2.爬取用户基本信息
             try:
                 self.crawUserInfo(browser, currentQQ)
             except Exception as e:
                 localTime = qqMain.commomUtils.getLocalTime()
                 open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
-#             print "爬取用户基本信息"
             #3.把该qq号码存入已被爬取的qq号码表中
             try:
                 self.insertDealtQQ(currentQQ)
             except Exception as e:
                 localTime = qqMain.commomUtils.getLocalTime()
                 open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
-#             print "把该qq号码存入已被爬取的qq号码表中"
             count = count + 1
         return count
 
@@ -162,7 +156,7 @@ if __name__ == "__main__":
     qqMain = QQMain()
     qqIndex = 1#使用第几个qq号码登录程序
     browser = qqMain.login.loginQQ(qqIndex)#登录qq
-    maxCount = 260#限制爬取的qq最大数
+    maxCount = 20#限制爬取的qq最大数
     count = 1#当前已爬去的qq数
     while count < maxCount:
         if count % 10 == 0:
@@ -180,10 +174,11 @@ if __name__ == "__main__":
             open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
             print "当前爬取出现异常：%d" % count
     browser.quit()
-    print "结束爬虫"
+    print "爬虫结束！"
     endTime = time.time()
     seconds = endTime - startTime
     print "共耗时  %d 秒" % seconds
+    print "共耗时  %d 分  %d 秒 " % (seconds/60,seconds%60)
     
         
         

@@ -16,8 +16,6 @@ class CommonUtils(object):
     
     def waitWebLoad(self,browser):
         '''判断页面是否加载完成'''
-        
-#         browser.
         pass
 
 

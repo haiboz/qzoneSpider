@@ -7,8 +7,7 @@ Created on 2016-6-24
 from bs4 import BeautifulSoup
 from qzone.login import sqlConnect
 from qzone.spiderUtils import commonUtils
-import re
-import json
+
 
 class QQParser(object):
     '''解析器'''
@@ -42,14 +41,12 @@ class QQParser(object):
                 for moodTag in moodTags:
                     mood = mood + moodTag.get_text()+"//"
                 mood = mood[:-2]
-#             print mood
             #发表日期
             dateTag = li.find("a",attrs={'class':'c_tx c_tx3 goDetail'})
             if dateTag is None:
                 date = ""
             else:
                 date = dateTag.get_text()
-#             print date
             #点赞人数
             supportTag = li.find("a",style="display: inline-block;",attrs={'class':'qz_like_btn c_tx mr8'})
             if supportTag is None:
@@ -60,7 +57,6 @@ class QQParser(object):
                     support = support[2:-1]
                 else:
                     support = "0"
-#             print "赞："+support
             #评论人数
             commentTag = li.find("a",attrs={'class':'c_tx comment_btn'})
             if commentTag is None:
@@ -71,7 +67,6 @@ class QQParser(object):
                     comment = comment[3:-1]
                 else:
                     comment = "0"
-#             print "评论："+comment
             #转发人数
             fowardTag = li.find("a",attrs={'class':'c_tx forward_btn'})
             if fowardTag is None:
@@ -82,7 +77,6 @@ class QQParser(object):
                     foward = foward[3:-1]
                 else:
                     foward = "0"
-#             print "转发："+foward
             index = index + 1
             mood = mood.replace("'", "\\'")#替换说说中出现的单引号',以防止插入失败
             sql = "insert into mood(mood_id,date,mood_content,support_count,comment_count,forward_count) values('%s','%s','%s','%s','%s','%s');" % (currentQQ,date,mood,support,comment,foward)
@@ -128,12 +122,9 @@ class QQParser(object):
             cursor = self.connect.select(sql)
             if cursor.rowcount == 0:#若没有则插入
                 nickName = nickNameList[tempIndex]
-#                 nickName = nickName.replace("'","\\'")
                 sqlIns = "insert friend(qq_id,friend_qq,friend_nickname,status) values(%s,%s,%s,%d)" % (currentQQ,qq,"'"+nickNameList[tempIndex]+"'",0)
-#                 print "sqlIns="+sqlIns
                 self.connect.insert(sqlIns)
             tempIndex = tempIndex + 1
-#         print qqList         
     
     def parseUserInfo(self,currentQQ):
         '''解析用户信息并保存数据库'''
@@ -189,32 +180,25 @@ class QQParser(object):
                 if element.find("uin:") == 0:#昵称
                     qqid = element[5:]
                     qqid = qqid.replace("'","\\'")
-#                     print "qq号:"+qqid
                 if element.find("nickname:") == 0:#昵称
                     nickname = element[9:]
                     nickname = nickname.replace("'","\\'")
-#                     print "昵称:"+nickname
                 if element.find("spacename:") == 0:#空间名称
                     spacename = element[10:]
                     spacename = spacename.replace("'", "\\'")
-#                     print "空间名称:"+spacename
                 if element.find("sex:") == 0:#性别
                     if element == "sex:+1": 
                         sex = "男"
                     else:
                         sex = "女"
-#                     print "性别:"+sex
                 if element.find("age:") == 0:#年龄
                     age = element[5:]
-#                     print "年龄:"+age
                 if element.find("birthyear:") == 0:#出生年份
                     birthyear = element[11:]
-#                     print "出生年份:"+birthyear
                 if element.find("birthday:") == 0:#出生日期
                     birthday = element[10:]
                     if len(birthday) == 4:
                         birthday = "0"+birthday
-#                     print "出生日期:"+birthday
                 if element.find("bloodtype:") == 0:#血型
                     if element == "bloodtype:+1":
                         bloodtype = "A"
@@ -226,7 +210,6 @@ class QQParser(object):
                         bloodtype = "AB"
                     else:
                         bloodtype = "其他"
-#                     print "血型:"+bloodtype
                 if element.find("constellation:") == 0:#星座
                     constellation = element[15:]
                     if constellation == "0":
@@ -255,25 +238,18 @@ class QQParser(object):
                         constellation = "双鱼座"
                     else:
                         constellation = "未填写"
-#                     print "星座:"+constellation
                 if element.find("country:") == 0:#现居地  国家
                     country = element[8:]
-#                     print "现居地  国家:"+country
                 if element.find("province:") == 0:#现居地  省份
                     province = element[9:]
-#                     print "现居地  省份:"+province
                 if element.find("city:") == 0:#现居地  城市
                     city = element[5:]
-#                     print "现居地  城市:"+city
                 if element.find("hco:") == 0:#故乡  国家
                     hcc = element[4:]
-#                     print "故乡  国家:"+hcc
                 if element.find("hp:") == 0:#故乡  省份
                     hp = element[3:]
-#                     print "故乡  省份:"+hp
                 if element.find("hc:") == 0:#故乡  城市
                     hc = element[3:]
-#                     print "故乡  城市:"+hc  
                 if element.find("marriage:") == 0:#婚姻状况
                     if element == "marriage:+1":
                         marriage = "单身"
@@ -291,33 +267,25 @@ class QQParser(object):
                         marriage = "离异"
                     else:
                         marriage = "未填写"
-#                     print "婚姻状况:"+marriage
                 if element.find("career:") == 0:#职业
                     career = element[7:]
                     career = career.replace("'", "\\'")
-#                     print "职业:"+career
                 if element.find("company:") == 0:#公司名称
                     company = element[8:]
                     company = company.replace("'", "\\'")
-#                     print "公司名称:"+company
                 if element.find("cco:") == 0:#公司 所在国家
                     cco = element[4:]
-#                     print "公司 所在国家:"+cco  
                 if element.find("cp:") == 0:#公司 所在省份
                     cp = element[3:]
-#                     print "公司 所在省份:"+cp  
                 if element.find("cc:") == 0:#公司 所在城市
                     cc = element[3:]
-#                     print "公司 所在城市:"+cc
                 if element.find("cb:") == 0:#公司 详细地址
                     cb = element[3:]
                     cb = cb.replace("'", "\\'")
-#                     print "公司 详细地址:"+cb  
             birthday = birthyear+"-"+birthday
             sql = "insert into userinfo(qq_id,nike_name,space_name,age,birthday,sex,Constellation,country,province,city,hcc,hp,hc,marriage,blood_type,career,company,cco,cp,cc,cb) \
                     values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')\
                     " % (qqid,nickname,spacename,age,birthday,sex,constellation,country,province,city,hcc,hp,hc,marriage,bloodtype,career,company,cco,cp,cc,cb)
-#             print "sql="+sql
             self.connect.insert(sql)
         else:
             #没有获取到个人信息
