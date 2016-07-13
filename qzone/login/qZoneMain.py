@@ -157,14 +157,14 @@ if __name__ == "__main__":
     qqIndex = 1#使用第几个qq号码登录程序
     browser = qqMain.login.loginQQ(qqIndex)#登录qq
     maxCount = 500#限制爬取的qq最大数
-    count = 0#当前已爬去的qq数
-    while count < maxCount:
+    count = 1#当前爬去的qq数
+    while count <= maxCount:
+        if count % 100 == 0:
+                print "程序休眠5秒"
+                time.sleep(5)
         if count % 6 == 5:
             qqIndex = qqIndex + 1
             browser.close()
-            if count % 50 == 0:
-                print "程序休眠5秒"
-                time.sleep(5)
             loginFlag = True
             loginCount = 0
             while loginFlag:
