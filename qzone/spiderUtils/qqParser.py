@@ -131,7 +131,7 @@ class QQParser(object):
         userfile = open("page_userinfo.html","r+")
         lines = userfile.readlines()
         userfile.close()
-        index = 600
+        index = 500
         lineList = lines[index:]
         startIndex = 0
         userStr = ""

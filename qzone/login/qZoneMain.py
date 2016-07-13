@@ -108,7 +108,7 @@ class QQMain(object):
                 #爬虫继续
                 #currentNum = rs[0]#id
                 currentQQ = rs[1]#qq
-                browser.get("http://user.qzone.qq.com/%d" % currentQQ) #进入主页
+                browser.get("http://user.qzone.qq.com/%d/main" % currentQQ) #进入主页
                 #判断能否进入空间
                 time.sleep(0.5)
                 try:
@@ -168,7 +168,7 @@ if __name__ == "__main__":
     qqMain = QQMain()
     qqIndex = 1#使用第几个qq号码登录程序
     browser = qqMain.login.loginQQ(qqIndex)#登录qq
-    maxCount = 500#限制爬取的qq最大数
+    maxCount = 210#限制爬取的qq最大数
     count = 1#当前爬去的qq数
     while count <= maxCount:
         if count % 100 == 0:
