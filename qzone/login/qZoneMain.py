@@ -162,9 +162,9 @@ if __name__ == "__main__":
         if count % 100 == 0:
                 print "程序休眠5秒"
                 time.sleep(5)
-        if count % 6 == 5:
+        if count % 10 == 9:
             qqIndex = qqIndex + 1
-            browser.close()
+            browser.quit()
             loginFlag = True
             loginCount = 0
             while loginFlag:
