@@ -1,8 +1,8 @@
 #coding:utf8
 '''
-Created on 2016年4月20日
+Created on 2016年6月20日
 
-@author: wb-zhaohaibo
+@author: 浮生若梦
 '''
 
 import MySQLdb
@@ -18,7 +18,7 @@ conn = MySQLdb.Connect(
                        )
 cursor = conn.cursor()
 
-sql_insert = "insert into student(userid,username) values(11,'赵海博')"
+sql_insert = "insert into student(userid,username) values(11,'浮生若梦')"
 sql_update = "update student set username = '测试01' where userid = 8"
 sql_delete = "delete from student where userid < 3"
 

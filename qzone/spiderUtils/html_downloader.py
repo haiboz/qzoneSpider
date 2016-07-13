@@ -1,8 +1,8 @@
 # coding:utf8
 '''
-Created on 2016年4月8日
+Created on 2016年6月25日
 
-@author: wb-zhaohaibo
+@author: 浮生若梦
 '''
 import urllib2
 
