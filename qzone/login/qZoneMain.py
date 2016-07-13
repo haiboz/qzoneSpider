@@ -80,7 +80,7 @@ class QQMain(object):
                     browser.find_element_by_xpath("//div[@id='menuContainer']/div/ul/li[6]/a").click()
                     break
                 except Exception as e :
-                    print "%d 个人信息未访问到：%d %s" % (currentQQ,index,e)
+#                     print "%d 个人信息未访问到：%d " % (currentQQ,index)
                     time.sleep(0.5)
                 index = index + 1
 #             browser.find_element_by_xpath("//div[@id='menuContainer']/div/ul/li[6]/a").click()
@@ -158,15 +158,19 @@ class QQMain(object):
 
 if __name__ == "__main__":
     print "进入主函数"
+    startTime = time.time()
     qqMain = QQMain()
     qqIndex = 1#使用第几个qq号码登录程序
     browser = qqMain.login.loginQQ(qqIndex)#登录qq
-    maxCount = 30#限制爬取的qq最大数
+    maxCount = 260#限制爬取的qq最大数
     count = 1#当前已爬去的qq数
     while count < maxCount:
-        if count % 5 == 0:
+        if count % 10 == 0:
             qqIndex = qqIndex + 1
             browser.close()
+            if count % 50 == 0:
+                print "程序休眠5秒"
+                time.sleep(5)
             browser = qqMain.login.loginQQ(qqIndex)#登录qq
         try:
             #爬虫主程序
@@ -175,8 +179,11 @@ if __name__ == "__main__":
             localTime = qqMain.commomUtils.getLocalTime()
             open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
             print "当前爬取出现异常：%d" % count
-#     browser.quit()
+    browser.quit()
     print "结束爬虫"
+    endTime = time.time()
+    seconds = endTime - startTime
+    print "共耗时  %d 秒" % seconds
     
         
         

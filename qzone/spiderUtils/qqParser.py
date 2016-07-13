@@ -6,6 +6,7 @@ Created on 2016-6-24
 '''
 from bs4 import BeautifulSoup
 from qzone.login import sqlConnect
+from qzone.spiderUtils import commonUtils
 import re
 import json
 
@@ -13,6 +14,7 @@ class QQParser(object):
     '''解析器'''
     def __init__(self):
         self.connect = sqlConnect.SQLConnect()
+        self.commonUtils = commonUtils.CommonUtils()
         pass
     
     def parseMood(self,currentQQ):
@@ -320,7 +322,8 @@ class QQParser(object):
         else:
             #没有获取到个人信息
             print "没有检索到   %d 的个人信息！" % currentQQ
-            pass
+            localTime = self.commonUtils.getLocalTime()
+            open("log_error.log","a+").write(localTime+" error:没有检索到  %d 的个人信息！\n" % currentQQ)
              
             
     
