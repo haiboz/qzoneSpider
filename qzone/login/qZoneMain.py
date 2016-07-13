@@ -82,7 +82,7 @@ class QQMain(object):
 #                     print "%d 个人信息未访问到：%d " % (currentQQ,index)
                     time.sleep(0.5)
                 index = index + 1
-            source = browser.page_source  #获取加载好的网页信息 提取有效信息
+            source = browser.page_source  #获取加载好的网页信息 提取有效的个人信息
             open("page_userinfo.html","w+").write(source)
             #解析用户个人信息
             self.qqParser.parseUserInfo(currentQQ)
@@ -156,10 +156,10 @@ if __name__ == "__main__":
     qqMain = QQMain()
     qqIndex = 1#使用第几个qq号码登录程序
     browser = qqMain.login.loginQQ(qqIndex)#登录qq
-    maxCount = 320#限制爬取的qq最大数
-    count = 1#当前已爬去的qq数
+    maxCount = 500#限制爬取的qq最大数
+    count = 0#当前已爬去的qq数
     while count < maxCount:
-        if count % 6 == 0:
+        if count % 6 == 5:
             qqIndex = qqIndex + 1
             browser.close()
             if count % 50 == 0:
