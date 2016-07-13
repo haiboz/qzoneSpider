@@ -168,12 +168,12 @@ if __name__ == "__main__":
     qqMain = QQMain()
     qqIndex = 1#使用第几个qq号码登录程序
     browser = qqMain.login.loginQQ(qqIndex)#登录qq
-    maxCount = 210#限制爬取的qq最大数
+    maxCount = 500#限制爬取的qq最大数
     count = 1#当前爬去的qq数
     while count <= maxCount:
-        if count % 100 == 0:
-                print "程序休眠5秒"
-                time.sleep(5)
+#         if count % 100 == 0:
+#                 print "程序休眠5秒"
+#                 time.sleep(5)
         if count % 10 == 9:
             qqIndex = qqIndex + 1
             browser.quit()
@@ -198,11 +198,10 @@ if __name__ == "__main__":
             open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
             print "当前爬取出现异常：%d" % count
     browser.quit()
-    print "爬虫结束！有效数据  %d 个" % maxCount
+    print "爬虫结束！有效数据  %d 个！" % maxCount
     endTime = time.time()
     seconds = endTime - startTime
-    print "共耗时  %d 秒" % seconds
-    print "共耗时  %d 时  %d 分  %d 秒 " % (seconds/3600,seconds/60,seconds%60)
+    print "共耗时  %d 秒！即  %d 时  %d 分  %d 秒 ！" % (seconds,seconds/3600,(seconds%3600)/60,seconds%60)
     
         
         
