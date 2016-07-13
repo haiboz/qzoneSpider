@@ -98,54 +98,66 @@ class QQMain(object):
         self.sqlConnect.insert(sql)
         
     
-    def craw(self,count,maxCount):
-        rs = qqMain.nextuser()
-        if rs is None:
-            print "qq账号已全部爬取"
-            return maxCount
-        else:
-            #爬虫继续
-            #currentNum = rs[0]#id
-            currentQQ = rs[1]#qq
-            browser.get("http://user.qzone.qq.com/%d" % currentQQ) #进入主页
-            #判断能否进入空间
-            time.sleep(0.5)
-            try:
-                mainTag = browser.find_element_by_id("tb_index_ownerfeeds")
-            except:
-                mainTag = None
-            while mainTag is None:#空间未开通或没有访问权限
-                rs = qqMain.nextuser()
+    def craw(self,count,maxCount,browser):
+        try:
+            rs = qqMain.nextuser()
+            if rs is None:
+                print "qq账号已全部爬取"
+                return maxCount
+            else:
+                #爬虫继续
                 #currentNum = rs[0]#id
                 currentQQ = rs[1]#qq
-                browser.get("http://user.qzone.qq.com/%d/main" % currentQQ) #进入主页
+                browser.get("http://user.qzone.qq.com/%d" % currentQQ) #进入主页
+                #判断能否进入空间
+                time.sleep(0.5)
                 try:
                     mainTag = browser.find_element_by_id("tb_index_ownerfeeds")
                 except:
                     mainTag = None
-            print "第   %d 个可访问qq : %d" % (count,currentQQ)
-            #1.爬取用户说说及好友信息
-            self.crawMood(browser,currentQQ)
-            #1.2 获取说说页面出现的好友qq号码存储
-            try:
-                self.qqParser.parseQQFriend(currentQQ)
-            except Exception as e:
-                localTime = qqMain.commomUtils.getLocalTime()
-                open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
-                print e
-            #2.爬取用户基本信息
-            try:
-                self.crawUserInfo(browser, currentQQ)
-            except Exception as e:
-                localTime = qqMain.commomUtils.getLocalTime()
-                open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
-            #3.把该qq号码存入已被爬取的qq号码表中
-            try:
-                self.insertDealtQQ(currentQQ)
-            except Exception as e:
-                localTime = qqMain.commomUtils.getLocalTime()
-                open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
-            count = count + 1
+                exceptIndex = 0#判定偶发的登录异常信息
+                while mainTag is None:#空间未开通或没有访问权限
+                    if exceptIndex == 20:#连续20个空间进入不成功 判定登录异常
+                        print "登录发生异常 重新登录！"
+                        localTime = self.commomUtils.getLocalTime()
+                        open("log_error.log","a+").write(localTime+" "+"login error:登录发生异常 重新登录！\n")
+                        browser = qqMain.login.loginQQ(1)#登录qq
+                        pass
+                    rs = qqMain.nextuser()
+                    #currentNum = rs[0]#id
+                    currentQQ = rs[1]#qq
+                    browser.get("http://user.qzone.qq.com/%d/main" % currentQQ) #进入主页
+                    try:
+                        mainTag = browser.find_element_by_id("tb_index_ownerfeeds")
+                    except:
+                        mainTag = None
+                        exceptIndex = exceptIndex + 1
+                print "第   %d 个可访问qq : %d" % (count,currentQQ)
+                #1.爬取用户说说及好友信息
+                self.crawMood(browser,currentQQ)
+                #1.2 获取说说页面出现的好友qq号码存储
+                try:
+                    self.qqParser.parseQQFriend(currentQQ)
+                except Exception as e:
+                    localTime = self.commomUtils.getLocalTime()
+                    open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
+                    print e
+                #2.爬取用户基本信息
+                try:
+                    self.crawUserInfo(browser, currentQQ)
+                except Exception as e:
+                    localTime = self.commomUtils.getLocalTime()
+                    open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
+                #3.把该qq号码存入已被爬取的qq号码表中
+                try:
+                    self.insertDealtQQ(currentQQ)
+                except Exception as e:
+                    localTime = self.commomUtils.getLocalTime()
+                    open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
+                count = count + 1
+        except Exception as e:
+            localTime = self.commomUtils.getLocalTime()
+            open("log_error.log","a+").write(localTime+" "+"craw error:count = %d %s\n" % (count,e))
         return count
 
     
@@ -180,7 +192,7 @@ if __name__ == "__main__":
                         break
         try:
             #爬虫主程序
-            count = qqMain.craw(count,maxCount)
+            count = qqMain.craw(count,maxCount,browser)
         except:
             localTime = qqMain.commomUtils.getLocalTime()
             open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
