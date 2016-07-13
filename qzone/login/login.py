@@ -20,16 +20,26 @@ class QZoneLogin(object):
     def getInitInfo(self,index):
         '''获取初始化账号信息'''
         f = open("initUser.txt")
-        if index % 2 == 0:
+        if index % 4 == 0:
+            #第四行
+            line = f.readlines()[3]
+            s = line.split(" ")
+            return s[0],s[1]
+        elif index % 4 == 3:
+            #第三行
+            line = f.readlines()[2]
+            s = line.split(" ")
+            return s[0],s[1][:-1]#去除换行符
+        elif index % 4 == 2:
             #第二行
             line = f.readlines()[1]
             s = line.split(" ")
-            return s[0],s[1]
-        else:
+            return s[0],s[1][:-1]#去除换行符
+        elif index % 4 == 1:
             #第一行
             line = f.readlines()[0]
             s = line.split(" ")
-            return s[0],s[1][:-1]#去除第一行的换行符
+            return s[0],s[1][:-1]#去除换行符
     
     def loginQQ(self,index):
         '''登录qq'''

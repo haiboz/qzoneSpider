@@ -40,7 +40,6 @@ class SQLConnect(object):
         except :
             localTime = commonUtils.CommonUtils().getLocalTime()
             open("log_error.log","a+").write(localTime+" select error:sql = "+sql+"\n")
-            print "查询异常sql:"+sql
         return cursor    
     
     def insert(self,sql):
@@ -54,9 +53,7 @@ class SQLConnect(object):
         except Exception as e:
             error = sql.encode("utf-8")
             localTime = commonUtils.CommonUtils().getLocalTime()
-            open("log_error.log","a+").write(localTime+" insert error:sql = "+error+"\n")
-            print "插入异常:sql="+sql
-            print e
+            open("log_error.log","a+").write(localTime+" insert error:sql = %s \nException: %s\n" % (error,e))
             
         
         

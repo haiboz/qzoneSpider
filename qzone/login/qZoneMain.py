@@ -105,8 +105,8 @@ class QQMain(object):
             return maxCount
         else:
             #爬虫继续
-            currentNum = rs[0]
-            currentQQ = rs[1]
+            #currentNum = rs[0]#id
+            currentQQ = rs[1]#qq
             browser.get("http://user.qzone.qq.com/%d" % currentQQ) #进入主页
             #判断能否进入空间
             time.sleep(0.5)
@@ -116,7 +116,7 @@ class QQMain(object):
                 mainTag = None
             while mainTag is None:#空间未开通或没有访问权限
                 rs = qqMain.nextuser()
-                currentNum = rs[0]#id
+                #currentNum = rs[0]#id
                 currentQQ = rs[1]#qq
                 browser.get("http://user.qzone.qq.com/%d/main" % currentQQ) #进入主页
                 try:
@@ -156,16 +156,28 @@ if __name__ == "__main__":
     qqMain = QQMain()
     qqIndex = 1#使用第几个qq号码登录程序
     browser = qqMain.login.loginQQ(qqIndex)#登录qq
-    maxCount = 20#限制爬取的qq最大数
+    maxCount = 320#限制爬取的qq最大数
     count = 1#当前已爬去的qq数
     while count < maxCount:
-        if count % 10 == 0:
+        if count % 6 == 0:
             qqIndex = qqIndex + 1
             browser.close()
             if count % 50 == 0:
                 print "程序休眠5秒"
                 time.sleep(5)
-            browser = qqMain.login.loginQQ(qqIndex)#登录qq
+            loginFlag = True
+            loginCount = 0
+            while loginFlag:
+                try:
+                    browser = qqMain.login.loginQQ(qqIndex)#登录qq
+                    loginFlag = False
+                except Exception as e:
+                    loginFlag = True
+                    localTime = qqMain.commomUtils.getLocalTime()
+                    open("log_error.log","a+").write(localTime+" "+"login error:%s \n" % e)
+                    loginCount = loginCount + 1
+                    if loginCount > 5:
+                        break
         try:
             #爬虫主程序
             count = qqMain.craw(count,maxCount)
@@ -174,11 +186,11 @@ if __name__ == "__main__":
             open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
             print "当前爬取出现异常：%d" % count
     browser.quit()
-    print "爬虫结束！"
+    print "爬虫结束！有效数据  %d 个" % maxCount
     endTime = time.time()
     seconds = endTime - startTime
     print "共耗时  %d 秒" % seconds
-    print "共耗时  %d 分  %d 秒 " % (seconds/60,seconds%60)
+    print "共耗时  %d 时  %d 分  %d 秒 " % (seconds/3600,seconds/60,seconds%60)
     
         
         
