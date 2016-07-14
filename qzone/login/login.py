@@ -29,15 +29,18 @@ class QZoneLogin(object):
         while i <= lineNum:
             if i > 0:
                 if index % lineNum == i:
-                    #最后一行
-                    s = lines[i-1]
+                    #非最后一行
+                    s = lines[i-1].split(" ")
                     return s[0],s[1][:-1]#去除换行符
                     pass
             else:
                 if index % lineNum == i:
                     #最后一行
-                    s = lines[lineNum-1]
-                    return s[0],s[1][:-1]#去除换行符
+                    s = lines[lineNum-1].split(" ")
+                    if s[1].find("\n") > 0:
+                        return s[0],s[1][:-1]#去除换行符
+                    else:
+                        return s[0],s[1]
             i = i + 1
         
         
