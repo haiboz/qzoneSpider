@@ -6,7 +6,6 @@ Created on 2016-6-24
 '''
 
 import MySQLdb
-print MySQLdb
 from qzone.spiderUtils import commonUtils
 
 class SQLConnect(object):
