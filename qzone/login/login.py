@@ -20,26 +20,47 @@ class QZoneLogin(object):
     def getInitInfo(self,index):
         '''获取初始化账号信息'''
         f = open("initUser.txt")
-        if index % 4 == 0:
-            #第四行
-            line = f.readlines()[3]
-            s = line.split(" ")
-            return s[0],s[1]
-        elif index % 4 == 3:
-            #第三行
-            line = f.readlines()[2]
-            s = line.split(" ")
-            return s[0],s[1][:-1]#去除换行符
-        elif index % 4 == 2:
-            #第二行
-            line = f.readlines()[1]
-            s = line.split(" ")
-            return s[0],s[1][:-1]#去除换行符
-        elif index % 4 == 1:
-            #第一行
-            line = f.readlines()[0]
-            s = line.split(" ")
-            return s[0],s[1][:-1]#去除换行符
+        lines = f.readlines()
+        lineNum = 0
+        for line in lines:
+            if len(line) > 10:
+                lineNum = lineNum + 1
+        i = 0
+        while i <= lineNum:
+            if i > 0:
+                if index % lineNum == i:
+                    #最后一行
+                    s = lines[i-1]
+                    return s[0],s[1][:-1]#去除换行符
+                    pass
+            else:
+                if index % lineNum == i:
+                    #最后一行
+                    s = lines[lineNum-1]
+                    return s[0],s[1][:-1]#去除换行符
+            i = i + 1
+        
+        
+#         if index % lineNum == 1:
+#             #第四行
+#             line = f.readlines()[0]
+#             s = line.split(" ")
+#             return s[0],s[1][:-1]#去除换行符
+#         elif index % 4 == 3:
+#             #第三行
+#             line = f.readlines()[2]
+#             s = line.split(" ")
+#             return s[0],s[1][:-1]#去除换行符
+#         elif index % 4 == 2:
+#             #第二行
+#             line = f.readlines()[1]
+#             s = line.split(" ")
+#             return s[0],s[1][:-1]#去除换行符
+#         elif index % 4 == 1:
+#             #第一行
+#             line = f.readlines()[0]
+#             s = line.split(" ")
+#             return s[0],s[1][:-1]#去除换行符
     
     def loginQQ(self,index):
         '''登录qq'''
