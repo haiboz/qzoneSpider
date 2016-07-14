@@ -21,6 +21,7 @@ class QZoneLogin(object):
         '''获取初始化账号信息'''
         f = open("initUser.txt")
         lines = f.readlines()
+        f.close()
         lineNum = 0
         for line in lines:
             if len(line) > 10:
@@ -42,28 +43,6 @@ class QZoneLogin(object):
                     else:
                         return s[0],s[1]
             i = i + 1
-        
-        
-#         if index % lineNum == 1:
-#             #第四行
-#             line = f.readlines()[0]
-#             s = line.split(" ")
-#             return s[0],s[1][:-1]#去除换行符
-#         elif index % 4 == 3:
-#             #第三行
-#             line = f.readlines()[2]
-#             s = line.split(" ")
-#             return s[0],s[1][:-1]#去除换行符
-#         elif index % 4 == 2:
-#             #第二行
-#             line = f.readlines()[1]
-#             s = line.split(" ")
-#             return s[0],s[1][:-1]#去除换行符
-#         elif index % 4 == 1:
-#             #第一行
-#             line = f.readlines()[0]
-#             s = line.split(" ")
-#             return s[0],s[1][:-1]#去除换行符
     
     def loginQQ(self,index):
         '''登录qq'''
