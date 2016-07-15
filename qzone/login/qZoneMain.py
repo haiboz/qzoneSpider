@@ -117,14 +117,12 @@ class QQMain(object):
                     mainTag = None
                 exceptIndex = 0#判定偶发的登录异常信息
                 while mainTag is None:#空间未开通或没有访问权限
-                    if exceptIndex >= 10:#连续10个空间进入不成功 判定登录异常
+                    if exceptIndex >= 15:#连续15个空间进入不成功 判定登录异常
                         exceptIndex = 0
-                        browser.quit()
                         print "登录发生异常 重新登录！"
                         localTime = self.commomUtils.getLocalTime()
                         open("log_error.log","a+").write(localTime+" "+"login error:登录发生异常 重新登录！\n")
                         browser = qqMain.login.loginQQ(qqIndex)#登录qq
-                        qqMain.craw(count,maxCount,browser,qqIndex)#重新调用爬取程序
                         pass
                     rs = qqMain.nextuser()
                     #currentNum = rs[0]#id
