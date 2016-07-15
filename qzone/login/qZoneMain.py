@@ -123,6 +123,8 @@ class QQMain(object):
                         localTime = self.commomUtils.getLocalTime()
                         open("log_error.log","a+").write(localTime+" "+"login error:登录发生异常 重新登录！\n")
                         browser = qqMain.login.loginQQ(qqIndex)#登录qq
+                        count = count + 10#避免登录账号被冻结时无限爬取导致待爬列表被消耗完
+                        return count
                         pass
                     rs = qqMain.nextuser()
                     #currentNum = rs[0]#id
@@ -169,7 +171,7 @@ if __name__ == "__main__":
     qqMain = QQMain()
     qqIndex = 1#使用第几个qq号码登录程序
     browser = qqMain.login.loginQQ(qqIndex)#登录qq
-    maxCount = 500#限制爬取的qq最大数
+    maxCount = 2000#限制爬取的qq最大数
     count = 1#当前爬去的qq数
     while count <= maxCount:
 #         if count % 100 == 0:
