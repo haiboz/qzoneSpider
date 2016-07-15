@@ -14,8 +14,8 @@ class QQmain(object):
 if __name__ == "__main__":
     print "进入主函数"
     qqMain = QQmain()
-    user = "798102408"
-    pwd = "yscq113312."
+    user = "5435354"
+    pwd = "werewr."
     browser = qqMain.login.loginQQ(user, pwd)
     browser.get("http://user.qzone.qq.com/1069757861/main")
     if 1 == 2:

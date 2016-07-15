@@ -39,8 +39,8 @@ try:
 #     print a.toPlainText()
 #     browser.wk_click_element_link(a, timeout=5)
     print "填入数据"
-    browser.wk_fill('input[id="u"]', "1069757861")
-    browser.wk_fill('input[id="p"]', "yscq11130312.")
+    browser.wk_fill('input[id="u"]', "106975753")
+    browser.wk_fill('input[id="p"]', "223332fsdf")
     print "登录"
     browser.wk_click('input[id="login_button"]')
 except Exception as e:
