@@ -124,6 +124,7 @@ class QQMain(object):
                         localTime = self.commomUtils.getLocalTime()
                         open("log_error.log","a+").write(localTime+" "+"login error:登录发生异常 重新登录！\n")
                         browser = qqMain.login.loginQQ(qqIndex)#登录qq
+                        qqMain.craw(count,maxCount,browser,qqIndex)#重新调用爬取程序
                         pass
                     rs = qqMain.nextuser()
                     #currentNum = rs[0]#id
