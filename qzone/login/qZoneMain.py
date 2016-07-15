@@ -98,7 +98,7 @@ class QQMain(object):
         self.sqlConnect.insert(sql)
         
     
-    def craw(self,count,maxCount,browser):
+    def craw(self,count,maxCount,browser,qqIndex):
         try:
             rs = qqMain.nextuser()
             if rs is None:
@@ -117,11 +117,13 @@ class QQMain(object):
                     mainTag = None
                 exceptIndex = 0#判定偶发的登录异常信息
                 while mainTag is None:#空间未开通或没有访问权限
-                    if exceptIndex == 20:#连续20个空间进入不成功 判定登录异常
+                    if exceptIndex >= 10:#连续10个空间进入不成功 判定登录异常
+                        exceptIndex = 0
+                        browser.quit()
                         print "登录发生异常 重新登录！"
                         localTime = self.commomUtils.getLocalTime()
                         open("log_error.log","a+").write(localTime+" "+"login error:登录发生异常 重新登录！\n")
-                        browser = qqMain.login.loginQQ(1)#登录qq
+                        browser = qqMain.login.loginQQ(qqIndex)#登录qq
                         pass
                     rs = qqMain.nextuser()
                     #currentNum = rs[0]#id
@@ -174,7 +176,7 @@ if __name__ == "__main__":
 #         if count % 100 == 0:
 #                 print "程序休眠5秒"
 #                 time.sleep(5)
-        if count % 10 == 9:
+        if count % 7 == 6:
             qqIndex = qqIndex + 1
             browser.quit()
             loginFlag = True
@@ -192,7 +194,7 @@ if __name__ == "__main__":
                         break
         try:
             #爬虫主程序
-            count = qqMain.craw(count,maxCount,browser)
+            count = qqMain.craw(count,maxCount,browser,qqIndex)
         except:
             localTime = qqMain.commomUtils.getLocalTime()
             open("log_error.log","a+").write(localTime+" "+"craw error:count = %d\n" % count)
